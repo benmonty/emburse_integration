@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from datetime import datetime
 from .OAuth import PreAuthState, PostAuthState
-from .AuthStateStore import get_auth_state_for_user, set_auth_state_for_user
+from .AuthStateStore import get_auth_state_for_user, set_auth_state_for_user, clear_auth_state_for_user
 
 oauth_param_mem_store = []
 
@@ -15,9 +15,15 @@ def index(request):
     auth_state = get_auth_state_for_user(request.session.session_key)
 
     if isinstance(auth_state, PreAuthState):
-        return HttpResponse('<a href="' + auth_state.init_details.to_url() + '">Authorize via Emburse</a>')
+        return HttpResponse('<a href="' + auth_state.init_details.to_url() + '">Authorize via Emburse</a><br><a href="/oauth/clear_cache">clear cache</a>')
     else:
         return HttpResponse('app already authorized')
+
+
+def clear_auth_cache(request):
+    user_id = request.session.session_key
+    clear_auth_state_for_user(user_id)
+    index(request)
 
 
 def callback(request):

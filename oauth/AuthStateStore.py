@@ -29,3 +29,8 @@ def get_auth_state_for_user(user_id) -> AuthState:
 
 def set_auth_state_for_user(user_id, new_state):
     oauth_state_map[user_id] = new_state
+
+
+def clear_auth_state_for_user(user_id):
+    oauth_state_map.pop(user_id, None)
+
