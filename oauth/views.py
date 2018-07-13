@@ -23,7 +23,7 @@ def index(request):
 def clear_auth_cache(request):
     user_id = request.session.session_key
     clear_auth_state_for_user(user_id)
-    index(request)
+    return index(request)
 
 
 def callback(request):
