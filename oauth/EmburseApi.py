@@ -1,6 +1,7 @@
 from typing import Union, NewType
 import os
 import requests
+from furl import furl
 
 OauthCode = NewType('OauthCode', str)
 AppClientId = NewType('AppClientId', str)
@@ -12,7 +13,7 @@ TokenCreateError = NewType('TokenCreateError', str)
 
 class CreateTokenReq:
 
-    def __init__(self, code: OauthCode, client_id: AppClientId, client_secret: AppClientSecret, redirect_uri: str):
+    def __init__(self, code: OauthCode, client_id: AppClientId, client_secret: AppClientSecret, redirect_uri: furl):
         self._grant_type = 'authorization_code'
         self._code = code
         self._client_id = client_id
@@ -25,7 +26,7 @@ class CreateTokenReq:
             'code': self._code,
             'client_id': self._client_id,
             'client_secret': self._client_secret,
-            'redirect_uri': self._redirect_uri,
+            'redirect_uri': self._redirect_uri.url,
         }
 
 
@@ -46,7 +47,7 @@ class EmburseApi:
     def app_client_secret(self):
         return AppClientSecret(os.environ.get('OAUTH_CLIENT_SECRET'))
 
-    def create_token(self, redirect_uri, code) -> AccessToken:
+    def create_token(self, redirect_uri:furl, code) -> AccessToken:
         req = CreateTokenReq(code, self.app_client_id(), self.app_client_secret(), redirect_uri)
         r = requests.post(self.oauth_token_create_url(), json=req.as_params())
         if r.status_code == 201:
