@@ -34,7 +34,7 @@ def callback(request):
         oauth_param_mem_store.append('<br>')
     else:
         oauth_param_mem_store.append({'__TIME__': str(datetime.now())})
-        oauth_param_mem_store.append({ 'msg': 'app already authorized'})
+        oauth_param_mem_store.append({ 'msg': 'app already authorized', 'access_token': auth_state.access_token})
         oauth_param_mem_store.append('<br>')
 
     return HttpResponse(oauth_param_mem_store)
