@@ -46,13 +46,13 @@ class EmburseApi:
     def app_client_secret(self):
         return AppClientSecret(os.environ.get('OAUTH_CLIENT_SECRET'))
 
-    def create_token(self, redirect_uri, code) -> Union[TokenCreateError, AccessToken]:
+    def create_token(self, redirect_uri, code) -> AccessToken:
         req = CreateTokenReq(code, self.app_client_id(), self.app_client_secret(), redirect_uri)
         r = requests.post(self.oauth_token_create_url(), json=req.as_params())
         if r.status_code == 201:
             return AccessToken(r.json()['access_token'])
         else:
-            return TokenCreateError(r.text)
+            r.raise_for_status()
 
     def revoke_token(self, to_revoke: Union[AccessToken, CompanyId]):
         pass

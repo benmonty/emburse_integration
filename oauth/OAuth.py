@@ -3,6 +3,7 @@ from furl import furl
 from abc import ABC, abstractmethod
 from uuid import uuid1
 import urllib.request
+from .EmburseApi import EmburseApi, AccessToken
 
 
 REQUEST_AUTH_RESPONSE_TYPE = "code"
@@ -81,6 +82,9 @@ class OAuthInitDetails:
     def state(self):
         return self._state
 
+    def redirect_uri(self):
+        return self._redirect_uri
+
 
 
 class AuthError:
@@ -90,8 +94,6 @@ class AuthError:
 
 AuthState = Union['PreAuthState', 'PostAuthState']
 
-AccessToken = NewType('AccessToken', str)
-
 class PostAuthState:
 
     def __init__(self, access_token):
@@ -100,21 +102,26 @@ class PostAuthState:
     def revoke_token(self):
         pass
 
+
 class PreAuthState:
 
     def __init__(self, init_details: OAuthInitDetails):
         self.init_details = init_details
 
-    def _create_access_token(self, code) -> Union[AuthError,AccessToken]:
-        req = urllib.request.Request()
+    def _create_access_token(self, code) -> AccessToken:
+        emburse = EmburseApi()
 
+        return emburse.create_token(self.init_details.redirect_uri(), code)
 
-    def supply_callback_params(self, code: str, state: str) -> Union[AuthError, PostAuthState]:
-        if state != self.init_details.state():
-            return AuthError('Invalid code submitted')
-        else:
-            access_token = self._create_access_token(code)
-            return PostAuthState(access_token)
+    def supply_callback_params(self, params) -> PostAuthState:
+        state = params.get('state')
+        code = params.get('code')
+
+        assert state == self.init_details.state()
+
+        access_token = self._create_access_token(code)
+
+        return PostAuthState(access_token)
 
 
 
