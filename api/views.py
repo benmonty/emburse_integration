@@ -13,6 +13,6 @@ def index(request, proxy_path):
     if isinstance(auth_state, PostAuthState):
         emburse = EmburseApi();
         response = emburse.request(auth_state.access_token, request.method, proxy_path, request.META['QUERY_STRING'])
-        return JsonResponse(response)
+        return JsonResponse(response, safe=False)
     else:
         return HttpResponse('Unauthorized', status=401)
