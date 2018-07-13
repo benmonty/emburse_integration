@@ -14,7 +14,7 @@ oauth_param_mem_store = []
 def index(request):
 
     # using session_key instead of creating concept of users
-    auth_state = get_auth_state_for_user(request.session.session_key)
+    auth_state = get_auth_state_for_user(request.session)
 
     if isinstance(auth_state, PreAuthState):
         return HttpResponse('<a href="' + auth_state.init_details.to_url() + '">Authorize via Emburse</a><br><a href="/oauth/clear_cache">clear cache</a>')
@@ -24,20 +24,18 @@ def index(request):
 
 @never_cache
 def clear_auth_cache(request):
-    user_id = request.session.session_key
-    clear_auth_state_for_user(user_id)
+    clear_auth_state_for_user(request.session)
     return index(request)
 
 
 @never_cache
 def callback(request):
-    user_id = request.session.session_key
 
-    auth_state = get_auth_state_for_user(user_id)
+    auth_state = get_auth_state_for_user(request.session)
 
     if isinstance(auth_state, PreAuthState):
         post_auth_state = auth_state.supply_callback_params(request.GET.copy())
-        set_auth_state_for_user(user_id, post_auth_state)
+        set_auth_state_for_user(request.session, post_auth_state)
         oauth_param_mem_store.append(request.GET.dict())
         oauth_param_mem_store.append({'__TIME__': str(datetime.now())})
         oauth_param_mem_store.append(request.session.session_key)

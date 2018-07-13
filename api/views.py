@@ -8,7 +8,7 @@ from oauth.OAuth import PostAuthState
 
 def index(request, proxy_path):
 
-    auth_state = get_auth_state_for_user(request.session.session_key)
+    auth_state = get_auth_state_for_user(request.session)
 
     if isinstance(auth_state, PostAuthState):
         emburse = EmburseApi();

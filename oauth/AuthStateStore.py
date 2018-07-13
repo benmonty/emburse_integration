@@ -1,16 +1,18 @@
 import os
 from .EmburseApi import EmburseApi
 from .OAuth import RandomStateProvider, OAuthInitDetails, PreAuthState, AuthState
+import pickle
 
-# time is extremely limited here, so I'm just storing the oauth state in an in-mem map
-# since it is not serializable and cannot be put in the session
-# obvious bad practice
+# time is extremely limited here, so I'm just pickling the states
+# obvious bad practice, saving state in the db would be preferable
 oauth_state_map = {}
 
+AUTH_STATE_KEY = 'auth_state'
 
-def get_auth_state_for_user(user_id) -> AuthState:
-    if user_id in oauth_state_map:
-        return oauth_state_map.get(user_id)
+def get_auth_state_for_user(session) -> AuthState:
+    if AUTH_STATE_KEY in session:
+        pickled = session[AUTH_STATE_KEY]
+        return pickle.load(pickled)
     else:
         emburse = EmburseApi()
 
@@ -22,15 +24,15 @@ def get_auth_state_for_user(user_id) -> AuthState:
 
         auth_state = PreAuthState(details)
 
-        oauth_state_map[user_id] = auth_state
+        set_auth_state_for_user(session, auth_state)
 
         return auth_state
 
 
-def set_auth_state_for_user(user_id, new_state):
-    oauth_state_map[user_id] = new_state
+def set_auth_state_for_user(session, new_state):
+    session[AUTH_STATE_KEY] = pickle.dump(new_state)
 
 
-def clear_auth_state_for_user(user_id):
-    oauth_state_map.pop(user_id, None)
+def clear_auth_state_for_user(session):
+    session.pop(AUTH_STATE_KEY, None)
 
