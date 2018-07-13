@@ -114,10 +114,11 @@ class PreAuthState:
         return emburse.create_token(self.init_details.redirect_uri(), code)
 
     def supply_callback_params(self, params) -> PostAuthState:
-        state = params.get('state')
         code = params.get('code')
+        state_param = params.get('state')
+        expected_state = self.init_details.state()
 
-        assert state == self.init_details.state()
+        assert state_param == expected_state
 
         access_token = self._create_access_token(code)
 
