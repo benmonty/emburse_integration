@@ -63,7 +63,7 @@ class EmburseApi:
 
     def request(self, access_token, http_method, path, query_string):
         url = self.api_url() + path + '?' + query_string
-        auth_value = 'Bearer ' + access_token
+        auth_value = 'Token ' + access_token
         headers = {'Authorization': auth_value}
 
         r = requests.request(http_method, url, headers=headers)
