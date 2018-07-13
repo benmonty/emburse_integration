@@ -35,6 +35,9 @@ class EmburseApi:
     def __init__(self):
         pass
 
+    def api_url(self):
+        return os.environ.get('EMBURSE_API_URL')
+
     def oauth_init_url(self):
         return os.environ.get('OAUTH_SERVER_INIT_AUTH_URL')
 
@@ -57,3 +60,11 @@ class EmburseApi:
 
     def revoke_token(self, to_revoke: Union[AccessToken, CompanyId]):
         pass
+
+    def request(self, access_token, http_method, path, query_string):
+        url = self.api_url + path + '?' + query_string
+        headers = {'Authorization': 'Bearer ' + access_token}
+
+        r = requests.request(http_method, url, headers=headers)
+
+        return r.json()

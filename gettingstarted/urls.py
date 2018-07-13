@@ -11,6 +11,7 @@ import hello.views
 # url(r'^blog/', include('blog.urls')),
 
 urlpatterns = [
+    url(r'^api/', include('api.urls')),
     url(r'^oauth/', include('oauth.urls')),
     url(r'^$', hello.views.index, name='index'),
     url(r'^db', hello.views.db, name='db'),
