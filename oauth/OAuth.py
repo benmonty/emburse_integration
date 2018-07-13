@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Union, NewType
 from furl import furl
 from abc import ABC, abstractmethod
 from uuid import uuid1
+import urllib.request
 
 
 REQUEST_AUTH_RESPONSE_TYPE = "code"
@@ -76,5 +77,47 @@ class OAuthInitDetails:
         url.args['redirect_uri'] = self._redirect_uri.url
         url.args['state'] = self._state
         return url.url
+
+    def state(self):
+        return self._state
+
+
+
+class AuthError:
+
+    def __init__(self, message: str):
+        self.message = message
+
+AuthState = Union['PreAuthState', 'PostAuthState']
+
+AccessToken = NewType('AccessToken', str)
+
+class PostAuthState:
+
+    def __init__(self, access_token):
+        self.access_token = access_token
+
+    def revoke_token(self):
+        pass
+
+class PreAuthState:
+
+    def __init__(self, init_details: OAuthInitDetails):
+        self.init_details = init_details
+
+    def _create_access_token(self, code) -> Union[AuthError,AccessToken]:
+        req = urllib.request.Request()
+
+
+    def supply_callback_params(self, code: str, state: str) -> Union[AuthError, PostAuthState]:
+        if state != self.init_details.state():
+            return AuthError('Invalid code submitted')
+        else:
+            access_token = self._create_access_token(code)
+            return PostAuthState(access_token)
+
+
+
+
 
 
