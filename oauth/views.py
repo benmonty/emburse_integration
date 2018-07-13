@@ -3,12 +3,14 @@ from django.http import HttpResponse
 from datetime import datetime
 from .OAuth import PreAuthState, PostAuthState
 from .AuthStateStore import get_auth_state_for_user, set_auth_state_for_user, clear_auth_state_for_user
+from django.views.decorators.cache import never_cache
 
 oauth_param_mem_store = []
 
 # Create your views here.
 
 
+@never_cache
 def index(request):
 
     # using session_key instead of creating concept of users
@@ -20,12 +22,14 @@ def index(request):
         return HttpResponse('app already authorized')
 
 
+@never_cache
 def clear_auth_cache(request):
     user_id = request.session.session_key
     clear_auth_state_for_user(user_id)
     return index(request)
 
 
+@never_cache
 def callback(request):
     user_id = request.session.session_key
 
