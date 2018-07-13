@@ -86,13 +86,14 @@ class OAuthInitDetails:
         return self._redirect_uri
 
 
-
 class AuthError:
 
     def __init__(self, message: str):
         self.message = message
 
+
 AuthState = Union['PreAuthState', 'PostAuthState']
+
 
 class PostAuthState:
 

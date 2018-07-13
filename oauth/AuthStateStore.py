@@ -2,6 +2,7 @@ import os
 from .EmburseApi import EmburseApi
 from .OAuth import RandomStateProvider, OAuthInitDetails, PreAuthState, AuthState
 import pickle
+import codecs
 
 # time is extremely limited here, so I'm just pickling the states
 # obvious bad practice, saving state in the db would be preferable
@@ -12,7 +13,7 @@ AUTH_STATE_KEY = 'auth_state'
 def get_auth_state_for_user(session) -> AuthState:
     if AUTH_STATE_KEY in session:
         pickled = session[AUTH_STATE_KEY]
-        return pickle.load(pickled)
+        return pickle.loads(codecs.decode(pickled.encode(), 'base64'))
     else:
         emburse = EmburseApi()
 
@@ -30,7 +31,7 @@ def get_auth_state_for_user(session) -> AuthState:
 
 
 def set_auth_state_for_user(session, new_state):
-    session[AUTH_STATE_KEY] = pickle.dump(new_state)
+    session[AUTH_STATE_KEY] = codecs.encode(pickle.dumps(new_state), 'base64').decode()
 
 
 def clear_auth_state_for_user(session):
