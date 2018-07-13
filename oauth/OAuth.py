@@ -28,7 +28,7 @@ class StaticStateProvider(StateProvider):
 class RandomStateProvider(StateProvider):
 
     def __init__(self):
-        self._state: str = uuid1()
+        self._state: str = uuid1().hex
 
     def get(self):
         return self._state
