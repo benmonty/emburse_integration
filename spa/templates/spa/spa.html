@@ -456,8 +456,12 @@
           });
 
           var gradient = this.getChartCtx().createLinearGradient(0, 0, 0, 400);
-          gradient.addColorStop(0, 'rgba(137,124,142,0)');
-          gradient.addColorStop(1, 'rgba(68,2,142,1)');
+          gradient.addColorStop(0, 'rgba(68,2,142,1)');
+          gradient.addColorStop(1, 'rgba(137,124,142,0)');
+
+          if (chart_data.length < 5) {
+            gradient = chart_data.map(function() { return 'rgba(68,2,142,1)'; })
+          }
 
           this.chartData = {
             datasets: [ { data: chart_data, backgroundColor: gradient }],
