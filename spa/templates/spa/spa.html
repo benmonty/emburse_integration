@@ -211,7 +211,7 @@
       } else {
         return axios.get(path)
           .then(function(response) {
-            return response;
+            return response.data;
           });
       }
     };
@@ -223,7 +223,7 @@
       } else {
         return axios.get(path)
           .then(function(response) {
-            return response;
+            return response.data;
           });
       }
     };
@@ -236,7 +236,7 @@
         return axios.get(path, {params: params})
           .then(function (response) {
             console.log(response);
-            return response;
+            return response.data;
           });
       }
     };
