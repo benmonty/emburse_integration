@@ -207,43 +207,37 @@
       const path = this.paths.getCompany;
 
       if (this.isDev) {
-          return Promise.resolve(getCompanyResponse);
+        return Promise.resolve(getCompanyResponse);
       } else {
-          /*
-          return axios.get(path, { params: params })
-            .then(function(response) {
-              console.log(response);
-              return response;
-            })
-          */
+        return axios.get(path)
+          .then(function(response) {
+            return response;
+          });
       }
     };
 
     EmburseApi.prototype.getAccounts = function() {
       const path = this.paths.getAccounts;
       if (this.isDev) {
-          return Promise.resolve(getAccountsResponse);
+        return Promise.resolve(getAccountsResponse);
       } else {
-          /*
-          return axios.get(path, { params: params })
-            .then(function(response) {
-              console.log(response);
-              return response;
-            })
-          */
+        return axios.get(path)
+          .then(function(response) {
+            return response;
+          });
       }
     };
 
     EmburseApi.prototype.getTransactions = function(params) {
       const path = this.paths.getTransaction;
       if (this.isDev) {
-          return Promise.resolve(getTxnResponse);
+        return Promise.resolve(getTxnResponse);
       } else {
-          return axios.get(path, {params: params})
-              .then(function (response) {
-                  console.log(response);
-                  return response;
-              });
+        return axios.get(path, {params: params})
+          .then(function (response) {
+            console.log(response);
+            return response;
+          });
       }
     };
 
