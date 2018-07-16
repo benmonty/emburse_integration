@@ -27,7 +27,8 @@
       #main {
       }
       #filter {
-        background-color: #3adb76;
+        border-left: 1px solid #ccc;
+        padding: 20px
       }
 
       .top-bar {
@@ -98,6 +99,9 @@
       .txn:hover {
         background-color: rgb(229, 223, 255);
       }
+      .bank-transfer-txn strong {
+        color: #3e8e3e
+      }
       .txn-child {
         align-self: center;
       }
@@ -166,6 +170,7 @@
           <transaction-list v-bind:transactions="transactions"></transaction-list>
         </section>
         <section id="filter" class="cell small-3">
+          <transaction-filters @filterchange="filterchange"></transaction-filters>
         </section>
       </div>
     </div>
@@ -173,15 +178,19 @@
 
   {%  verbatim %}
   <script>
-    var getTxnResponse = {"count": 245, "next": "https://api.emburse.com/v1/transactions?limit=10&offset=10", "previous": null, "results": [{"id": "7dcc9429-ce37-424c-90b0-aa14add54749", "url": "https://api.emburse.com/v1/transactions/7dcc9429-ce37-424c-90b0-aa14add54749", "amount": -16.0, "state": "completed", "merchant": {"mid": 19974185000, "mcc": 5812, "name": "SOMA PIZZA", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T19:55:36Z", "attachments": [], "created_at": "2018-07-13T19:55:47.528521Z"}, {"id": "db93d0ba-626e-404e-9360-ab804d768d6e", "url": "https://api.emburse.com/v1/transactions/db93d0ba-626e-404e-9360-ab804d768d6e", "amount": -500.0, "state": "completed", "merchant": {"mid": 89062000854521, "mcc": 7311, "name": "GOOGLE *ADWS9701119557", "address": null, "city": "cc@google.com", "state": "CA", "zip": "94043"}, "card": {"id": "60896f8f-1755-4179-b00a-b746dd769448", "url": "https://api.emburse.com/v1/cards/60896f8f-1755-4179-b00a-b746dd769448", "state": "active", "description": "Adwords spend", "last_four": "6795"}, "member": {"id": "822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "url": "https://api.emburse.com/v1/members/822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "email": "haleylierman@gmail.com", "code": null, "first_name": "Haley", "last_name": "Lierman"}, "category": {"id": "a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "url": "https://api.emburse.com/v1/categories/a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "code": null, "name": "Marketing", "parent": null}, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T19:24:50Z", "attachments": [], "created_at": "2018-07-13T19:24:59.278147Z"}, {"id": "7f49f43e-3353-4f83-a090-78d0ac1e0dfb", "url": "https://api.emburse.com/v1/transactions/7f49f43e-3353-4f83-a090-78d0ac1e0dfb", "amount": -43.71, "state": "completed", "merchant": {"mid": 372083400880, "mcc": 5812, "name": "LARK CREEK GRILL", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94128"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T03:30:06Z", "attachments": [], "created_at": "2018-07-13T03:30:13.290927Z"}, {"id": "a8e4f7f9-b2ab-4030-a312-02b9a26a60a2", "url": "https://api.emburse.com/v1/transactions/a8e4f7f9-b2ab-4030-a312-02b9a26a60a2", "amount": -25.74, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 7PM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T02:30:48Z", "attachments": [], "created_at": "2018-07-13T02:30:57.151555Z"}, {"id": "86004a06-0316-44d9-bd4c-c3a1bd657702", "url": "https://api.emburse.com/v1/transactions/86004a06-0316-44d9-bd4c-c3a1bd657702", "amount": -22.82, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 12PM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-12T23:57:56Z", "attachments": [], "created_at": "2018-07-12T23:58:02.474714Z"}, {"id": "b515b7a1-b92f-424e-b73a-9f0ffbc9256c", "url": "https://api.emburse.com/v1/transactions/b515b7a1-b92f-424e-b73a-9f0ffbc9256c", "amount": -15.0, "state": "completed", "merchant": {"mid": 372593648887, "mcc": 5812, "name": "D&B DALY CITY #102", "address": null, "city": "DALY CITY", "state": "CA", "zip": "94015"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-12T23:05:32Z", "attachments": [], "created_at": "2018-07-12T23:05:41.056946Z"}, {"id": "2c8e3959-67ba-4bcc-ba1b-5def295e918a", "url": "https://api.emburse.com/v1/transactions/2c8e3959-67ba-4bcc-ba1b-5def295e918a", "amount": -7.54, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 10AM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-12T17:31:09Z", "attachments": [], "created_at": "2018-07-12T17:31:15.273245Z"}, {"id": "2f1ebab3-3654-47d2-a47e-fdfe15d3de19", "url": "https://api.emburse.com/v1/transactions/2f1ebab3-3654-47d2-a47e-fdfe15d3de19", "amount": -28.46, "state": "completed", "merchant": {"mid": 188418000053360, "mcc": 5812, "name": "SQ *SEXTANT COFFEE ROA", "address": null, "city": "San Francisco", "state": "CA", "zip": "94103"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-12T14:39:26Z", "attachments": [], "created_at": "2018-07-12T14:39:32.019996Z"}, {"id": "0471e18b-ab63-46b0-a83e-a5d47aa8b5a4", "url": "https://api.emburse.com/v1/transactions/0471e18b-ab63-46b0-a83e-a5d47aa8b5a4", "amount": -4.37, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5812, "name": "SQ *SHM COFFEE, LLC DBA L", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-11T17:00:27Z", "attachments": [], "created_at": "2018-07-11T17:00:34.943949Z"}, {"id": "18196ebc-a27c-4023-9db5-75fa8a31c2b9", "url": "https://api.emburse.com/v1/transactions/18196ebc-a27c-4023-9db5-75fa8a31c2b9", "amount": -13.44, "state": "completed", "merchant": {"mid": 4445100046094, "mcc": 5912, "name": "WALGREENS #4609", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94103"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-11T15:25:53Z", "attachments": [], "created_at": "2018-07-11T15:26:00.272278Z"}]}
+    var getTxnResponse = {"count": 246, "next": "https://api.emburse.com/v1/transactions?limit=50&offset=50", "previous": null, "results": [{"id": "37f67d76-5335-4afd-8788-1a004db238ad", "url": "https://api.emburse.com/v1/transactions/37f67d76-5335-4afd-8788-1a004db238ad", "amount": 0.0, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-14T19:01:43Z", "attachments": [], "created_at": "2018-07-14T19:01:44.651623Z"}, {"id": "7dcc9429-ce37-424c-90b0-aa14add54749", "url": "https://api.emburse.com/v1/transactions/7dcc9429-ce37-424c-90b0-aa14add54749", "amount": -16.0, "state": "completed", "merchant": {"mid": 19974185000, "mcc": 5812, "name": "SOMA PIZZA", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T19:55:36Z", "attachments": [], "created_at": "2018-07-13T19:55:47.528521Z"}, {"id": "db93d0ba-626e-404e-9360-ab804d768d6e", "url": "https://api.emburse.com/v1/transactions/db93d0ba-626e-404e-9360-ab804d768d6e", "amount": -500.0, "state": "completed", "merchant": {"mid": 89062000854521, "mcc": 7311, "name": "GOOGLE *ADWS9701119557", "address": null, "city": "cc@google.com", "state": "CA", "zip": "94043"}, "card": {"id": "60896f8f-1755-4179-b00a-b746dd769448", "url": "https://api.emburse.com/v1/cards/60896f8f-1755-4179-b00a-b746dd769448", "state": "active", "description": "Adwords spend", "last_four": "6795"}, "member": {"id": "822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "url": "https://api.emburse.com/v1/members/822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "email": "haleylierman@gmail.com", "code": null, "first_name": "Haley", "last_name": "Lierman"}, "category": {"id": "a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "url": "https://api.emburse.com/v1/categories/a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "code": null, "name": "Marketing", "parent": null}, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T19:24:50Z", "attachments": [], "created_at": "2018-07-13T19:24:59.278147Z"}, {"id": "7f49f43e-3353-4f83-a090-78d0ac1e0dfb", "url": "https://api.emburse.com/v1/transactions/7f49f43e-3353-4f83-a090-78d0ac1e0dfb", "amount": -43.71, "state": "completed", "merchant": {"mid": 372083400880, "mcc": 5812, "name": "LARK CREEK GRILL", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94128"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T03:30:06Z", "attachments": [], "created_at": "2018-07-13T03:30:13.290927Z"}, {"id": "a8e4f7f9-b2ab-4030-a312-02b9a26a60a2", "url": "https://api.emburse.com/v1/transactions/a8e4f7f9-b2ab-4030-a312-02b9a26a60a2", "amount": -25.74, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 7PM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T02:30:48Z", "attachments": [], "created_at": "2018-07-13T02:30:57.151555Z"}, {"id": "86004a06-0316-44d9-bd4c-c3a1bd657702", "url": "https://api.emburse.com/v1/transactions/86004a06-0316-44d9-bd4c-c3a1bd657702", "amount": -22.82, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 12PM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-12T23:57:56Z", "attachments": [], "created_at": "2018-07-12T23:58:02.474714Z"}, {"id": "b515b7a1-b92f-424e-b73a-9f0ffbc9256c", "url": "https://api.emburse.com/v1/transactions/b515b7a1-b92f-424e-b73a-9f0ffbc9256c", "amount": -15.0, "state": "completed", "merchant": {"mid": 372593648887, "mcc": 5812, "name": "D&B DALY CITY #102", "address": null, "city": "DALY CITY", "state": "CA", "zip": "94015"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-12T23:05:32Z", "attachments": [], "created_at": "2018-07-12T23:05:41.056946Z"}, {"id": "2c8e3959-67ba-4bcc-ba1b-5def295e918a", "url": "https://api.emburse.com/v1/transactions/2c8e3959-67ba-4bcc-ba1b-5def295e918a", "amount": -7.54, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 10AM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-12T17:31:09Z", "attachments": [], "created_at": "2018-07-12T17:31:15.273245Z"}, {"id": "2f1ebab3-3654-47d2-a47e-fdfe15d3de19", "url": "https://api.emburse.com/v1/transactions/2f1ebab3-3654-47d2-a47e-fdfe15d3de19", "amount": -28.46, "state": "completed", "merchant": {"mid": 188418000053360, "mcc": 5812, "name": "SQ *SEXTANT COFFEE ROA", "address": null, "city": "San Francisco", "state": "CA", "zip": "94103"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-12T14:39:26Z", "attachments": [], "created_at": "2018-07-12T14:39:32.019996Z"}, {"id": "0471e18b-ab63-46b0-a83e-a5d47aa8b5a4", "url": "https://api.emburse.com/v1/transactions/0471e18b-ab63-46b0-a83e-a5d47aa8b5a4", "amount": -4.37, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5812, "name": "SQ *SHM COFFEE, LLC DBA L", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-11T17:00:27Z", "attachments": [], "created_at": "2018-07-11T17:00:34.943949Z"}, {"id": "18196ebc-a27c-4023-9db5-75fa8a31c2b9", "url": "https://api.emburse.com/v1/transactions/18196ebc-a27c-4023-9db5-75fa8a31c2b9", "amount": -13.44, "state": "completed", "merchant": {"mid": 4445100046094, "mcc": 5912, "name": "WALGREENS #4609", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94103"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-11T15:25:53Z", "attachments": [], "created_at": "2018-07-11T15:26:00.272278Z"}, {"id": "013616e6-517e-4f3a-a4d4-eaf00fab55cf", "url": "https://api.emburse.com/v1/transactions/013616e6-517e-4f3a-a4d4-eaf00fab55cf", "amount": -15.08, "state": "completed", "merchant": {"mid": 53894000053360, "mcc": 5814, "name": "SQ *KOREAN BOBCHA", "address": null, "city": "San Bruno", "state": "CA", "zip": "94066"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T19:52:09Z", "attachments": [], "created_at": "2018-07-10T19:52:14.950579Z"}, {"id": "98415f36-2ee1-41d4-9ede-d4b93366fcc6", "url": "https://api.emburse.com/v1/transactions/98415f36-2ee1-41d4-9ede-d4b93366fcc6", "amount": -4.25, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5499, "name": "SQ *#CENTOCOFFEE", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T16:54:18Z", "attachments": [], "created_at": "2018-07-10T16:54:24.602614Z"}, {"id": "5d02252b-5993-4ea4-81a3-f0a4371da11f", "url": "https://api.emburse.com/v1/transactions/5d02252b-5993-4ea4-81a3-f0a4371da11f", "amount": 25000.0, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T15:45:12Z", "attachments": [], "created_at": "2018-07-10T15:45:14.030674Z"}, {"id": "41d498f8-6f96-4235-96ef-7509f75fdd02", "url": "https://api.emburse.com/v1/transactions/41d498f8-6f96-4235-96ef-7509f75fdd02", "amount": 25000.0, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T15:43:46Z", "attachments": [], "created_at": "2018-07-10T15:43:47.876379Z"}, {"id": "11bb6db0-e1f7-45c2-81a4-c95e1e30bd8a", "url": "https://api.emburse.com/v1/transactions/11bb6db0-e1f7-45c2-81a4-c95e1e30bd8a", "amount": -500.0, "state": "completed", "merchant": {"mid": 89062000854521, "mcc": 7311, "name": "GOOGLE *ADWS9701119557", "address": null, "city": "cc@google.com", "state": "CA", "zip": "94043"}, "card": {"id": "60896f8f-1755-4179-b00a-b746dd769448", "url": "https://api.emburse.com/v1/cards/60896f8f-1755-4179-b00a-b746dd769448", "state": "active", "description": "Adwords spend", "last_four": "6795"}, "member": {"id": "822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "url": "https://api.emburse.com/v1/members/822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "email": "haleylierman@gmail.com", "code": null, "first_name": "Haley", "last_name": "Lierman"}, "category": {"id": "a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "url": "https://api.emburse.com/v1/categories/a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "code": null, "name": "Marketing", "parent": null}, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T13:33:24Z", "attachments": [], "created_at": "2018-07-10T13:33:28.935358Z"}, {"id": "05ce5333-381e-446c-aba0-bd228e1c4187", "url": "https://api.emburse.com/v1/transactions/05ce5333-381e-446c-aba0-bd228e1c4187", "amount": -298.4, "state": "completed", "merchant": {"mid": 210996000015342, "mcc": 4511, "name": "UNITED", "address": null, "city": "800-932-2732", "state": "TX", "zip": "77002"}, "card": {"id": "e6a3bbc3-a9ff-455d-b165-c77e5aab70d2", "url": "https://api.emburse.com/v1/cards/e6a3bbc3-a9ff-455d-b165-c77e5aab70d2", "state": "active", "description": "Nicole WT", "last_four": "8836"}, "member": {"id": "077e13b3-57de-4b96-8377-c88e346fead5", "url": "https://api.emburse.com/v1/members/077e13b3-57de-4b96-8377-c88e346fead5", "email": "ncurbanski@gmail.com", "code": null, "first_name": "Nicole", "last_name": "Urbanski"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T02:59:43Z", "attachments": [], "created_at": "2018-07-10T02:59:47.300836Z"}, {"id": "1d113950-4fa2-47c1-b908-dfab75734a9b", "url": "https://api.emburse.com/v1/transactions/1d113950-4fa2-47c1-b908-dfab75734a9b", "amount": -1414.42, "state": "completed", "merchant": {"mid": 222220032566001, "mcc": 5732, "name": "APPLE STORE  #R075", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94108"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T01:47:39Z", "attachments": [], "created_at": "2018-07-10T01:47:47.572993Z"}, {"id": "9b829fcd-72f6-48d9-86d3-68958e473963", "url": "https://api.emburse.com/v1/transactions/9b829fcd-72f6-48d9-86d3-68958e473963", "amount": 69.55, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-10T00:01:46Z", "attachments": [], "created_at": "2018-07-10T00:01:47.715474Z"}, {"id": "c9d88433-e1b5-43e6-bacd-74ffb13bbe17", "url": "https://api.emburse.com/v1/transactions/c9d88433-e1b5-43e6-bacd-74ffb13bbe17", "amount": -7.68, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE MON 4PM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-09T23:24:34Z", "attachments": [], "created_at": "2018-07-09T23:24:39.332109Z"}, {"id": "a6382b81-8e41-491e-ad39-d8affdee1c28", "url": "https://api.emburse.com/v1/transactions/a6382b81-8e41-491e-ad39-d8affdee1c28", "amount": -1.0, "state": "completed", "merchant": {"mid": 242661000053360, "mcc": 8931, "name": "SQ *EMBURSE", "address": null, "city": "SAN MATEO", "state": "CA", "zip": "94401"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-09T22:08:00Z", "attachments": [], "created_at": "2018-07-09T22:08:04.995944Z"}, {"id": "feb8bb82-5c65-42e2-a821-b3c14666b9b9", "url": "https://api.emburse.com/v1/transactions/feb8bb82-5c65-42e2-a821-b3c14666b9b9", "amount": -1.0, "state": "completed", "merchant": {"mid": 242661000053360, "mcc": 8931, "name": "SQ *EMBURSE", "address": null, "city": "SAN MATEO", "state": "CA", "zip": "94401"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-09T21:53:58Z", "attachments": [], "created_at": "2018-07-09T21:54:04.473501Z"}, {"id": "4e1bb937-ac9f-4c24-8bd5-1500127febcc", "url": "https://api.emburse.com/v1/transactions/4e1bb937-ac9f-4c24-8bd5-1500127febcc", "amount": -11.0, "state": "completed", "merchant": {"mid": 8089990, "mcc": 5499, "name": "THIRD & TOWNSEND CORNER S", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-09T21:23:06Z", "attachments": [], "created_at": "2018-07-09T21:23:33.236851Z"}, {"id": "631b55eb-949e-4215-b579-fc6a4b14ff49", "url": "https://api.emburse.com/v1/transactions/631b55eb-949e-4215-b579-fc6a4b14ff49", "amount": -17.47, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5812, "name": "SQ *PICNIC ON THIRD", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-09T19:55:12Z", "attachments": [], "created_at": "2018-07-09T19:55:15.892439Z"}, {"id": "b3014a3d-dd49-40a8-a94b-dfc3b6aceafd", "url": "https://api.emburse.com/v1/transactions/b3014a3d-dd49-40a8-a94b-dfc3b6aceafd", "amount": -31.4, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE MON 9AM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-09T17:38:16Z", "attachments": [], "created_at": "2018-07-09T17:38:21.287947Z"}, {"id": "19133dd7-a8b0-40ed-9bb6-52f621329d3d", "url": "https://api.emburse.com/v1/transactions/19133dd7-a8b0-40ed-9bb6-52f621329d3d", "amount": 49.36, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-07T00:05:35Z", "attachments": [], "created_at": "2018-07-07T00:05:36.852762Z"}, {"id": "d746cbdd-1292-4f86-a031-f2a14014cb8b", "url": "https://api.emburse.com/v1/transactions/d746cbdd-1292-4f86-a031-f2a14014cb8b", "amount": -15.4, "state": "completed", "merchant": {"mid": 372390202888, "mcc": 5499, "name": "TACO EL OJO DE AGUA", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94124"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-06T19:32:26Z", "attachments": [], "created_at": "2018-07-06T19:32:32.622382Z"}, {"id": "8f6e59b7-2cd3-4387-9010-8df4a9625a6e", "url": "https://api.emburse.com/v1/transactions/8f6e59b7-2cd3-4387-9010-8df4a9625a6e", "amount": -32.96, "state": "completed", "merchant": {"mid": 372634561883, "mcc": 5411, "name": "SAFEWAY STORE  2606", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-06T02:57:15Z", "attachments": [], "created_at": "2018-07-06T02:57:30.052309Z"}, {"id": "d070752c-1579-4df5-abad-c0446438f833", "url": "https://api.emburse.com/v1/transactions/d070752c-1579-4df5-abad-c0446438f833", "amount": 27.34, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-06T00:01:32Z", "attachments": [], "created_at": "2018-07-06T00:01:33.234207Z"}, {"id": "4e159a5e-22dc-453a-a055-71f5b876ab1e", "url": "https://api.emburse.com/v1/transactions/4e159a5e-22dc-453a-a055-71f5b876ab1e", "amount": -3.45, "state": "completed", "merchant": {"mid": 8089990, "mcc": 5499, "name": "THIRD & TOWNSEND CORNER S", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-05T22:02:55Z", "attachments": [], "created_at": "2018-07-05T22:03:05.058563Z"}, {"id": "4809e32b-1a0e-4ce1-ac4b-fa0131b3a4dd", "url": "https://api.emburse.com/v1/transactions/4809e32b-1a0e-4ce1-ac4b-fa0131b3a4dd", "amount": -13.94, "state": "completed", "merchant": {"mid": 372385714889, "mcc": 5814, "name": "KAMA O DELI", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-05T19:05:34Z", "attachments": [], "created_at": "2018-07-05T19:05:40.652244Z"}, {"id": "f37a981d-50f6-4269-8889-2bad4268b24d", "url": "https://api.emburse.com/v1/transactions/f37a981d-50f6-4269-8889-2bad4268b24d", "amount": -10.95, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5812, "name": "SQ *DURSO CAFE & JUICE BA", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-05T18:05:29Z", "attachments": [], "created_at": "2018-07-05T18:05:37.624546Z"}, {"id": "1dc7bab1-c987-4c7c-97c1-5b0fea6dd958", "url": "https://api.emburse.com/v1/transactions/1dc7bab1-c987-4c7c-97c1-5b0fea6dd958", "amount": 297.07, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-04T00:01:14Z", "attachments": [], "created_at": "2018-07-04T00:01:15.997695Z"}, {"id": "e211d4ac-6d0a-41b1-a77e-82002279f187", "url": "https://api.emburse.com/v1/transactions/e211d4ac-6d0a-41b1-a77e-82002279f187", "amount": -500.0, "state": "completed", "merchant": {"mid": 89062000854521, "mcc": 7311, "name": "GOOGLE *ADWS9701119557", "address": null, "city": "cc@google.com", "state": "CA", "zip": "94043"}, "card": {"id": "60896f8f-1755-4179-b00a-b746dd769448", "url": "https://api.emburse.com/v1/cards/60896f8f-1755-4179-b00a-b746dd769448", "state": "active", "description": "Adwords spend", "last_four": "6795"}, "member": {"id": "822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "url": "https://api.emburse.com/v1/members/822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "email": "haleylierman@gmail.com", "code": null, "first_name": "Haley", "last_name": "Lierman"}, "category": {"id": "a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "url": "https://api.emburse.com/v1/categories/a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "code": null, "name": "Marketing", "parent": null}, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-03T20:01:26Z", "attachments": [], "created_at": "2018-07-03T20:01:33.227794Z"}, {"id": "8b275c83-dacb-4214-b9ae-f1c4d670feac", "url": "https://api.emburse.com/v1/transactions/8b275c83-dacb-4214-b9ae-f1c4d670feac", "amount": -7.6, "state": "completed", "merchant": {"mid": 4445001899310, "mcc": 5411, "name": "WHOLEFDS SOM 101", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-03T18:05:13Z", "attachments": [], "created_at": "2018-07-03T18:05:19.687899Z"}, {"id": "9d90901b-906c-47c4-b154-213b494cfa00", "url": "https://api.emburse.com/v1/transactions/9d90901b-906c-47c4-b154-213b494cfa00", "amount": -59.96, "state": "completed", "merchant": {"mid": 57444216600, "mcc": 5542, "name": "SHELL", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-02T20:42:57Z", "attachments": [], "created_at": "2018-07-02T20:43:03.943892Z"}, {"id": "34ba5ae8-0b22-47c2-aa56-4d48ae89b47a", "url": "https://api.emburse.com/v1/transactions/34ba5ae8-0b22-47c2-aa56-4d48ae89b47a", "amount": -10.95, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5812, "name": "SQ *DURSO CAFE & JUICE BA", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-02T19:59:04Z", "attachments": [], "created_at": "2018-07-02T19:59:09.970011Z"}, {"id": "27f1d986-710c-4e85-9227-b9232dc658cb", "url": "https://api.emburse.com/v1/transactions/27f1d986-710c-4e85-9227-b9232dc658cb", "amount": -11.25, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5814, "name": "SQ *COCHINITA", "address": null, "city": "San Francisco", "state": "CA", "zip": "94109"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-02T18:53:16Z", "attachments": [], "created_at": "2018-07-02T18:53:21.005718Z"}, {"id": "4fd0ab0f-4518-45f7-8fcf-b600e83d6295", "url": "https://api.emburse.com/v1/transactions/4fd0ab0f-4518-45f7-8fcf-b600e83d6295", "amount": -20.0, "state": "completed", "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-29T18:40:54Z", "attachments": [], "created_at": "2018-07-02T01:06:04.942978Z"}, {"id": "011d9fd7-5c21-402f-8cdc-bdc3e318c8af", "url": "https://api.emburse.com/v1/transactions/011d9fd7-5c21-402f-8cdc-bdc3e318c8af", "amount": -10.28, "state": "completed", "merchant": {"mid": 445357875993, "mcc": 5734, "name": "SLACK", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94103"}, "card": {"id": "e23dc2a0-1a6e-4553-b9da-7d3b856ef630", "url": "https://api.emburse.com/v1/cards/e23dc2a0-1a6e-4553-b9da-7d3b856ef630", "state": "active", "description": "Slack", "last_four": "6659"}, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-01T22:03:58Z", "attachments": [], "created_at": "2018-07-01T22:04:02.573246Z"}, {"id": "cb781771-02f4-46c9-8372-dfcbcf7f9953", "url": "https://api.emburse.com/v1/transactions/cb781771-02f4-46c9-8372-dfcbcf7f9953", "amount": -16.97, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5814, "name": "SQ *MESTIZA TAQUERIA", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-30T01:02:53Z", "attachments": [], "created_at": "2018-06-30T01:03:08.958480Z"}, {"id": "51b6c418-68bd-4db5-9018-796d4e23f8a2", "url": "https://api.emburse.com/v1/transactions/51b6c418-68bd-4db5-9018-796d4e23f8a2", "amount": -39.92, "state": "completed", "merchant": {"mid": 345120516884, "mcc": 5812, "name": "TENDER GREENS KING ST", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-30T00:28:30Z", "attachments": [], "created_at": "2018-06-30T00:28:37.833935Z"}, {"id": "5d90e4b3-b5d4-4a6f-885e-fa570e49acab", "url": "https://api.emburse.com/v1/transactions/5d90e4b3-b5d4-4a6f-885e-fa570e49acab", "amount": -11.57, "state": "completed", "merchant": {"mid": 542929806277851, "mcc": 5812, "name": "THE BAGEL BAKERY C", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-29T20:07:15Z", "attachments": [], "created_at": "2018-06-29T20:07:21.189409Z"}, {"id": "20421695-4896-4608-9d7f-ab9343fad456", "url": "https://api.emburse.com/v1/transactions/20421695-4896-4608-9d7f-ab9343fad456", "amount": -15.44, "state": "completed", "merchant": {"mid": 372385714889, "mcc": 5814, "name": "KAMA O DELI", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-06-29T19:42:29Z", "attachments": [], "created_at": "2018-06-29T19:42:35.971704Z"}, {"id": "13a9d93d-0986-4c4e-bee7-7455027c8471", "url": "https://api.emburse.com/v1/transactions/13a9d93d-0986-4c4e-bee7-7455027c8471", "amount": 20.0, "state": "completed", "bank_account": {"description": "Emburse Inc - 3742", "name": "Emburse Inc", "number": "3742"}, "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-29T18:28:16Z", "attachments": [], "created_at": "2018-06-29T18:28:17.612097Z"}, {"id": "57a68179-d9fa-472b-b78b-e86fe1ff6baa", "url": "https://api.emburse.com/v1/transactions/57a68179-d9fa-472b-b78b-e86fe1ff6baa", "amount": -16.26, "state": "completed", "merchant": {"mid": 6861845652965120179, "mcc": 5814, "name": "SQ *LAMAS PERUVIAN RES", "address": null, "city": "HALFMOON BAY", "state": "CA", "zip": "94019"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-28T20:17:56Z", "attachments": [], "created_at": "2018-06-28T20:18:04.892432Z"}, {"id": "a84261fe-eb63-4cde-a937-bd4c81729b6d", "url": "https://api.emburse.com/v1/transactions/a84261fe-eb63-4cde-a937-bd4c81729b6d", "amount": -15.22, "state": "completed", "merchant": {"mid": 6861845652965120179, "mcc": 5814, "name": "SQ *LAMAS PERUVIAN RES", "address": null, "city": "HALFMOON BAY", "state": "CA", "zip": "94019"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-06-28T20:17:26Z", "attachments": [], "created_at": "2018-06-28T20:17:32.784712Z"}, {"id": "61b0346f-a1f5-4fd7-9f32-d93e92095e04", "url": "https://api.emburse.com/v1/transactions/61b0346f-a1f5-4fd7-9f32-d93e92095e04", "amount": -10.95, "state": "completed", "merchant": {"mid": 497625651569427650, "mcc": 5812, "name": "SQ *DURSO CAFE & JUICE BA", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "url": "https://api.emburse.com/v1/cards/62e36e4a-f943-4fa9-9514-b1b42a7ba8d7", "state": "active", "description": "Peter Lai", "last_four": "8421"}, "member": {"id": "ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "url": "https://api.emburse.com/v1/members/ee9cd7e9-bb10-4dcf-b00f-30d1d2b39a50", "email": "peter@emburse.com", "code": null, "first_name": "Peter", "last_name": "Lai"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-28T18:38:19Z", "attachments": [], "created_at": "2018-06-28T18:38:24.332454Z"}, {"id": "2d76c443-e382-41fe-bcaf-f8fa72140d20", "url": "https://api.emburse.com/v1/transactions/2d76c443-e382-41fe-bcaf-f8fa72140d20", "amount": -12.34, "state": "completed", "card": null, "member": null, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-06-28T01:06:47Z", "attachments": [], "created_at": "2018-06-28T01:06:48.525143Z"}, {"id": "1fb32682-2b44-4a33-a384-16df02e10869", "url": "https://api.emburse.com/v1/transactions/1fb32682-2b44-4a33-a384-16df02e10869", "amount": -181.2, "state": "completed", "merchant": {"mid": 8921852199259419131, "mcc": 4511, "name": "UNITED", "address": null, "city": "800-932-2732", "state": "TX", "zip": "77002"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-06-28T00:41:53Z", "attachments": [], "created_at": "2018-06-28T00:42:00.912518Z"}]};
     var getCompanyResponse = {"id": "755688d0-164b-4a46-b688-8dd8182c64a3", "name": "Emburse (Stripe)", "website": "http://emburse.com", "shipping_address": {"id": "4492b137-5393-4d56-961b-11a56d66f869", "url": "https://api.emburse.com/v1/shipping-addresses/4492b137-5393-4d56-961b-11a56d66f869", "address_1": "665 3rd St #150", "address_2": "", "city": "San Francisco", "state": "CA", "zip_code": "94107"}, "sso": {"domain": "emburse.com", "acs_url": "https://app.emburse.com/sso/saml/emburse.com", "idp_metadata_sha1": "76db873ebbba280afb03099fdb8430c259906c64", "is_approved": true}, "created_at": "2018-03-22T01:36:17.513417Z", "billing_address": {"address_1": "250 King Street", "address_2": "#864", "city": "San Francisco", "state": "CA", "zip_code": "94107"}}
     var getAccountsResponse = {"count": 1, "next": null, "previous": null, "results": [{"id": "dbee5490-6595-42ec-a792-82a9fc516633", "url": "https://api.emburse.com/v1/accounts/dbee5490-6595-42ec-a792-82a9fc516633", "name": "Account for Emburse (Stripe)", "number": "104840085519", "ledger_balance": 49590.77, "available_balance": 49590.77, "minimum_balance": 50000.0, "created_at": "2018-03-22T01:39:42.743849Z"}]}
+
+
 
     var EmburseApi = function() {
       var pathRoot = 'https://limitless-tundra-78661.herokuapp.com/api';
       var makePath = function(pathSuffix) {
         return pathRoot + pathSuffix;
       };
+
+      this.isDev = false;
 
       this.paths = {
         getTransaction: makePath('/v1/transactions'),
@@ -196,40 +205,119 @@
 
     EmburseApi.prototype.getCompany = function() {
       const path = this.paths.getCompany;
-      return Promise.resolve(getCompanyResponse);
-      /*
-      return axios.get(path, { params: params })
-        .then(function(response) {
-          console.log(response);
-          return response;
-        })
-      */
+
+      if (this.isDev) {
+          return Promise.resolve(getCompanyResponse);
+      } else {
+          /*
+          return axios.get(path, { params: params })
+            .then(function(response) {
+              console.log(response);
+              return response;
+            })
+          */
+      }
     };
 
     EmburseApi.prototype.getAccounts = function() {
       const path = this.paths.getAccounts;
-      return Promise.resolve(getAccountsResponse);
-      /*
-      return axios.get(path, { params: params })
-        .then(function(response) {
-          console.log(response);
-          return response;
-        })
-      */
+      if (this.isDev) {
+          return Promise.resolve(getAccountsResponse);
+      } else {
+          /*
+          return axios.get(path, { params: params })
+            .then(function(response) {
+              console.log(response);
+              return response;
+            })
+          */
+      }
     };
 
     EmburseApi.prototype.getTransactions = function(params) {
       const path = this.paths.getTransaction;
-      return Promise.resolve(getTxnResponse);
-      return axios.get(path, { params: params })
-        .then(function(response) {
-          console.log(response);
-          return response;
-        });
+      if (this.isDev) {
+          return Promise.resolve(getTxnResponse);
+      } else {
+          return axios.get(path, {params: params})
+              .then(function (response) {
+                  console.log(response);
+                  return response;
+              });
+      }
     };
 
     Vue.prototype.$emburse = new EmburseApi();
     Vue.prototype.$_ = _;
+
+    var CreatedAfterFilter = function(iso_8601) {
+        this.time = iso_8601;
+    };
+    CreatedAfterFilter.prototype.toParams = function() {
+        return { created_after: this.time };
+    };
+
+    var LimitFilter = function(numRecords) {
+        this.limit = numRecords;
+    };
+    LimitFilter.prototype.toParams = function() {
+        return { limit: this.limit };
+    };
+
+    var filters = {
+        dateRange: {
+            allTime: new CreatedAfterFilter('2000-01-01T01:01:01'),
+            thisMonth: new CreatedAfterFilter('2018-07-01T01:01:01'),
+            today: new CreatedAfterFilter('2018-07-13T00:00:00'),
+        },
+    };
+
+    Vue.component('transaction-filters', {
+        data: function() {
+            return {
+                defaultFilters: [
+                    new LimitFilter(300)
+                ],
+                userFilters: [],
+                dateRanges: [
+                    {
+                        label: 'All Time',
+                        value: 'allTime',
+                    },
+                    {
+                        label: 'This Month',
+                        value: 'thisMonth',
+                    },
+                    {
+                        label: 'Today',
+                        value: 'today',
+                    },
+                ],
+                range: 'allTime'
+            };
+        },
+        created: function() {
+            this.dateRangeChange();
+        },
+        methods: {
+            dateRangeChange: function() {
+                this.userFilters = [ filters.dateRange[this.range] ];
+            }
+        },
+        watch: {
+            userFilters: function() {
+                this.$emit('filterchange', this.defaultFilters.concat(this.userFilters))
+            }
+        },
+        template: `
+        <div>
+          <h5>Dates</h5>
+          <select v-model="range" v-on:change="dateRangeChange">
+            <option v-for="r in dateRanges" :value="r.value">{{r.label}}</option>
+          </select>
+        </div>
+      `,
+    });
 
     Vue.component('nav-link', {
       props: {
@@ -327,14 +415,61 @@
           <div>
             <h3>Transactions</h3>
             <ul id="txn-list">
-              <transaction v-for="txn in transactions" v-bind:transaction="txn" v-bind:key="txn.id"></transaction>
+              <component v-for="txn in transactions" v-bind:transaction="txn" v-bind:key="txn.id" :is="getTransactionType(txn)"></component>
             </ul>
           </div>
         </div>
       `,
+      methods: {
+          getTransactionType: function(transaction) {
+            if (transaction.bank_account) {
+                return 'bank-transfer-transaction';
+            } else if (transaction.card && transaction.amount <= 0) {
+                return 'card-purchase-transaction'
+            } else if (transaction.card && transaction.amount > 0) {
+                return 'card-refund-transaction'
+            }
+          }
+      }
     });
 
-    Vue.component('transaction', {
+    Vue.component('bank-transfer-transaction', {
+        props: ['transaction'],
+        computed: {
+            txnDate: function() {
+                return moment(this.transaction.created_at).format('MMMM Do YYYY');
+            },
+            txnAmount: function() {
+                return Math.abs(this.transaction.amount + 0.0).toFixed(2);
+            },
+            accountDescription: function() {
+                return this.transaction.bank_account.description;
+            },
+        },
+        template: `
+        <li class="txn bank-transfer-txn">
+          <div class="txn-child txn-receipt">
+            <i class="material-icons">receipt</i>
+          </div>
+          <div class="txn-child txn-main-details">
+            <div>
+              <strong>{{accountDescription}}</strong>
+            </div>
+            <div class="txn-sub-details">
+              <span>{{txnDate}}</span>
+            </div>
+          </div>
+          <div class="txn-child txn-amount-card" >
+            <div><strong>+$\{{txnAmount}}</strong></div>
+          </div>
+          <div class="txn-child txn-action-wrap" >
+            <button class="button tiny hollow"><i class="material-icons">arrow_drop_down</i></button>
+          </div>
+        </li>
+      `,
+    });
+
+    Vue.component('card-purchase-transaction', {
       props: ['transaction'],
       computed: {
         merchantName: function() {
@@ -342,7 +477,7 @@
         },
         memberFirstName: function() {
           console.log(this.transaction)
-          return this.transaction.member.first_name;
+          return (this.transaction.member || {first_name: 'No Member'}).first_name;
         },
         txnDate: function() {
           return moment(this.transaction.created_at).format('MMMM Do YYYY');
@@ -365,6 +500,46 @@
             </div>
             <div class="txn-sub-details">
               <span>{{txnDate}}</span> <i class="material-icons txn-person-icon">person</i> <span>{{memberFirstName}}</span>
+            </div>
+          </div>
+          <div class="txn-child txn-amount-card" >
+            <div>$\{{txnAmount}}</div>
+            <div><a href="#"><i class="material-icons">credit_card</i> {{cardDescription}}</a></div>
+          </div>
+          <div class="txn-child txn-action-wrap" >
+            <button class="button tiny hollow"><i class="material-icons">arrow_drop_down</i></button>
+          </div>
+        </li>
+      `,
+    });
+
+    Vue.component('card-refund-transaction', {
+        props: ['transaction'],
+        computed: {
+            merchantName: function() {
+                return this.transaction.merchant.name;
+            },
+            txnDate: function() {
+                return moment(this.transaction.created_at).format('MMMM Do YYYY');
+            },
+            txnAmount: function() {
+                return Math.abs(this.transaction.amount + 0.0).toFixed(2);
+            },
+            cardDescription: function() {
+                return this.transaction.card.description;
+            },
+        },
+        template: `
+        <li class="txn">
+          <div class="txn-child txn-receipt">
+            <i class="material-icons">receipt</i>
+          </div>
+          <div class="txn-child txn-main-details">
+            <div>
+              <strong>{{merchantName}}</strong>
+            </div>
+            <div class="txn-sub-details">
+              <span>{{txnDate}}</span> <i class="material-icons txn-person-icon">person</i> <span>REFUND</span>
             </div>
           </div>
           <div class="txn-child txn-amount-card" >
@@ -488,10 +663,6 @@
         },
       },
       created: function() {
-        this.$emburse.getTransactions({})
-          .then((result) => {
-            this.transactionsCursor = result;
-          })
         this.$emburse.getCompany()
           .then((result) => {
             this.company = result;
@@ -502,6 +673,18 @@
           })
       },
       methods: {
+        filterchange: function(filterList) {
+          var params = {};
+
+          filterList.map(function(f) {
+              _.extend(params, f.toParams());
+          });
+
+          this.$emburse.getTransactions(params)
+            .then((result) => {
+              this.transactionsCursor = result;
+            })
+        },
         signIn: function() {
           this.authenticated = true
         },

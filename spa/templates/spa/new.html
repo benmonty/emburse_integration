@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>embursetest_ui</title>
+    <link rel="stylesheet" href="static/foundation.css">
+    <link rel="stylesheet" href="static/app.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+
+    <style>
+      body {
+        background-color: #f8f8f8;
+        color: #767676;
+      }
+      strong {
+        color: #5b5b5b;
+      }
+      #side-nav {
+        background-color: #f2f2f2;
+      }
+      #main {
+      }
+
+      #filter {
+        border-left: 1px solid #ccc;
+        padding: 20px
+      }
+
+      .top-bar {
+        background-color: #f8f8f8;
+        color: #767676;
+        border-bottom: 1px solid #ccc;
+        box-shadow: 0 0 3px 0 rgba(0,0,0,0.3);
+        padding: 15px;
+      }
+
+      .top-bar .logo {
+        display: inline-block;
+        border: 2px solid #54d;
+        color: #54d;
+        font-weight: bold;
+        width: 25px;
+        height: 25px;
+        text-align: center;
+      }
+
+      #side-nav {
+        padding-top: 20px;
+        border-right: 1px solid #ddd;
+      }
+
+      .top-bar strong {
+        color: #54d;
+      }
+
+      .nav-group {
+        list-style: none;
+      }
+
+      .nav-link {
+        padding: 4px 0;
+        font-size: 1rem;
+      }
+
+      .nav-link span {
+        padding-left: 3px;
+        vertical-align: baseline;
+      }
+
+      .nav-link:hover {
+        font-weight: bold;
+        color: #3b3b3b;
+      }
+
+      .nav-link.selected {
+        font-weight: bold;
+        color: #3b3b3b;
+      }
+
+      .nav-link i {
+        font-size: 1rem;
+        vertical-align: text-bottom;
+      }
+
+      .nav-link.selected i {
+        color: #54d;
+      }
+
+      .txn {
+        display:flex;
+        border-top: 1px solid #ccc;
+        padding: 10px 0;
+      }
+      .txn:hover {
+        background-color: rgb(229, 223, 255);
+      }
+      .txn-child {
+        align-self: center;
+      }
+      .txn-receipt {
+        flex: none;
+        padding-right: 15px;
+        color: #afaead;
+      }
+      .txn-main-details {
+        flex: 3;
+      }
+      .txn-main-details strong {
+        color: #5b5b5b;
+      }
+      .txn-person-icon {
+        vertical-align: text-bottom;
+        color: #54d;
+        font-size: 1rem;
+      }
+      .txn-sub-details {
+        font-size: .9rem;
+      }
+      .txn-action-wrap {
+        flex: none;
+        padding-right: 10px;
+      }
+      .txn-action-wrap .button {
+        margin: auto;
+        border-color: #54d;
+        color: #54d;
+      }
+      .txn-amount-card {
+        flex: 1;
+      }
+      .txn-amount-card i {
+        font-size: 1rem;
+        vertical-align: text-bottom;
+      }
+      .txn-amount-card a {
+        color: #27f;
+        font-size: .9rem;
+      }
+
+      #txn-list-wrap {
+        padding: 15px;
+      }
+
+      #txn-list-wrap h3 {
+        color: #565656;
+      }
+
+      #txn-list {
+        max-width: 800px;
+        margin: auto;
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <div id="app" class="grid-container full">
+      <top-bar v-bind:company="company" v-bind:accounts="accounts"></top-bar>
+      <div class="grid-x">
+        <side-navigation v-bind:groups="nav_link_groups" class="cell small-2"></side-navigation>
+        <section id="main" class="cell auto">
+          <transaction-list v-bind:transactions="transactions"></transaction-list>
+        </section>
+        <section id="filter" class="cell small-3">
+          <transaction-filters @filterchange="filterchange"></transaction-filters>
+        </section>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    var getTxnResponse = {"count": 245, "next": "https://api.emburse.com/v1/transactions?limit=10&offset=10", "previous": null, "results": [{"id": "7dcc9429-ce37-424c-90b0-aa14add54749", "url": "https://api.emburse.com/v1/transactions/7dcc9429-ce37-424c-90b0-aa14add54749", "amount": -16.0, "state": "completed", "merchant": {"mid": 19974185000, "mcc": 5812, "name": "SOMA PIZZA", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94107"}, "card": {"id": "03dd01e0-6557-4eae-bac4-58e136cd2cc2", "url": "https://api.emburse.com/v1/cards/03dd01e0-6557-4eae-bac4-58e136cd2cc2", "state": "active", "description": "Winston Huang", "last_four": "0800"}, "member": {"id": "c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "url": "https://api.emburse.com/v1/members/c4bd47c8-7942-49e2-b9d5-8eca68a6be79", "email": "winston@emburse.com", "code": null, "first_name": "Winston", "last_name": "Huang"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T19:55:36Z", "attachments": [], "created_at": "2018-07-13T19:55:47.528521Z"}, {"id": "db93d0ba-626e-404e-9360-ab804d768d6e", "url": "https://api.emburse.com/v1/transactions/db93d0ba-626e-404e-9360-ab804d768d6e", "amount": -500.0, "state": "completed", "merchant": {"mid": 89062000854521, "mcc": 7311, "name": "GOOGLE *ADWS9701119557", "address": null, "city": "cc@google.com", "state": "CA", "zip": "94043"}, "card": {"id": "60896f8f-1755-4179-b00a-b746dd769448", "url": "https://api.emburse.com/v1/cards/60896f8f-1755-4179-b00a-b746dd769448", "state": "active", "description": "Adwords spend", "last_four": "6795"}, "member": {"id": "822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "url": "https://api.emburse.com/v1/members/822b334f-8a8a-42d0-8ae4-9a7efb704cc9", "email": "haleylierman@gmail.com", "code": null, "first_name": "Haley", "last_name": "Lierman"}, "category": {"id": "a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "url": "https://api.emburse.com/v1/categories/a10fa37f-ce2b-4a1b-8a36-dff573d1c351", "code": null, "name": "Marketing", "parent": null}, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T19:24:50Z", "attachments": [], "created_at": "2018-07-13T19:24:59.278147Z"}, {"id": "7f49f43e-3353-4f83-a090-78d0ac1e0dfb", "url": "https://api.emburse.com/v1/transactions/7f49f43e-3353-4f83-a090-78d0ac1e0dfb", "amount": -43.71, "state": "completed", "merchant": {"mid": 372083400880, "mcc": 5812, "name": "LARK CREEK GRILL", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94128"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T03:30:06Z", "attachments": [], "created_at": "2018-07-13T03:30:13.290927Z"}, {"id": "a8e4f7f9-b2ab-4030-a312-02b9a26a60a2", "url": "https://api.emburse.com/v1/transactions/a8e4f7f9-b2ab-4030-a312-02b9a26a60a2", "amount": -25.74, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 7PM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-13T02:30:48Z", "attachments": [], "created_at": "2018-07-13T02:30:57.151555Z"}, {"id": "86004a06-0316-44d9-bd4c-c3a1bd657702", "url": "https://api.emburse.com/v1/transactions/86004a06-0316-44d9-bd4c-c3a1bd657702", "amount": -22.82, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 12PM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-12T23:57:56Z", "attachments": [], "created_at": "2018-07-12T23:58:02.474714Z"}, {"id": "b515b7a1-b92f-424e-b73a-9f0ffbc9256c", "url": "https://api.emburse.com/v1/transactions/b515b7a1-b92f-424e-b73a-9f0ffbc9256c", "amount": -15.0, "state": "completed", "merchant": {"mid": 372593648887, "mcc": 5812, "name": "D&B DALY CITY #102", "address": null, "city": "DALY CITY", "state": "CA", "zip": "94015"}, "card": {"id": "a13e99c7-890e-4345-8f88-119dbae1d9d7", "url": "https://api.emburse.com/v1/cards/a13e99c7-890e-4345-8f88-119dbae1d9d7", "state": "active", "description": "Chris Xia", "last_four": "6787"}, "member": {"id": "013a525d-8731-45f2-b41c-d3ea5d0c03cc", "url": "https://api.emburse.com/v1/members/013a525d-8731-45f2-b41c-d3ea5d0c03cc", "email": "chrisxia@emburse.com", "code": null, "first_name": "Chris", "last_name": "Xia"}, "category": null, "department": null, "label": null, "location": {"id": "fa6ce2cd-0496-48f9-bda8-35d892ae59db", "url": "https://api.emburse.com/v1/locations/fa6ce2cd-0496-48f9-bda8-35d892ae59db", "name": "San Francisco", "code": null, "parent": null}, "note": "", "receipt": null, "time": "2018-07-12T23:05:32Z", "attachments": [], "created_at": "2018-07-12T23:05:41.056946Z"}, {"id": "2c8e3959-67ba-4bcc-ba1b-5def295e918a", "url": "https://api.emburse.com/v1/transactions/2c8e3959-67ba-4bcc-ba1b-5def295e918a", "amount": -7.54, "state": "completed", "merchant": {"mid": 445134698999, "mcc": 4121, "name": "LYFT   *RIDE THU 10AM", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94104"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-12T17:31:09Z", "attachments": [], "created_at": "2018-07-12T17:31:15.273245Z"}, {"id": "2f1ebab3-3654-47d2-a47e-fdfe15d3de19", "url": "https://api.emburse.com/v1/transactions/2f1ebab3-3654-47d2-a47e-fdfe15d3de19", "amount": -28.46, "state": "completed", "merchant": {"mid": 188418000053360, "mcc": 5812, "name": "SQ *SEXTANT COFFEE ROA", "address": null, "city": "San Francisco", "state": "CA", "zip": "94103"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-12T14:39:26Z", "attachments": [], "created_at": "2018-07-12T14:39:32.019996Z"}, {"id": "0471e18b-ab63-46b0-a83e-a5d47aa8b5a4", "url": "https://api.emburse.com/v1/transactions/0471e18b-ab63-46b0-a83e-a5d47aa8b5a4", "amount": -4.37, "state": "completed", "merchant": {"mid": 445301504996, "mcc": 5812, "name": "SQ *SHM COFFEE, LLC DBA L", "address": null, "city": "San Francisco", "state": "CA", "zip": "94107"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-11T17:00:27Z", "attachments": [], "created_at": "2018-07-11T17:00:34.943949Z"}, {"id": "18196ebc-a27c-4023-9db5-75fa8a31c2b9", "url": "https://api.emburse.com/v1/transactions/18196ebc-a27c-4023-9db5-75fa8a31c2b9", "amount": -13.44, "state": "completed", "merchant": {"mid": 4445100046094, "mcc": 5912, "name": "WALGREENS #4609", "address": null, "city": "SAN FRANCISCO", "state": "CA", "zip": "94103"}, "card": {"id": "aa099462-ff04-4114-94e9-c5d471230577", "url": "https://api.emburse.com/v1/cards/aa099462-ff04-4114-94e9-c5d471230577", "state": "active", "description": "Chris Gallo", "last_four": "6939"}, "member": {"id": "57083b57-14cb-4901-b0ab-2361da3ac420", "url": "https://api.emburse.com/v1/members/57083b57-14cb-4901-b0ab-2361da3ac420", "email": "chris@emburse.com", "code": null, "first_name": "Chris", "last_name": "Gallo"}, "category": null, "department": null, "label": null, "location": null, "note": "", "receipt": null, "time": "2018-07-11T15:25:53Z", "attachments": [], "created_at": "2018-07-11T15:26:00.272278Z"}]}
+    var getCompanyResponse = {"id": "755688d0-164b-4a46-b688-8dd8182c64a3", "name": "Emburse (Stripe)", "website": "http://emburse.com", "shipping_address": {"id": "4492b137-5393-4d56-961b-11a56d66f869", "url": "https://api.emburse.com/v1/shipping-addresses/4492b137-5393-4d56-961b-11a56d66f869", "address_1": "665 3rd St #150", "address_2": "", "city": "San Francisco", "state": "CA", "zip_code": "94107"}, "sso": {"domain": "emburse.com", "acs_url": "https://app.emburse.com/sso/saml/emburse.com", "idp_metadata_sha1": "76db873ebbba280afb03099fdb8430c259906c64", "is_approved": true}, "created_at": "2018-03-22T01:36:17.513417Z", "billing_address": {"address_1": "250 King Street", "address_2": "#864", "city": "San Francisco", "state": "CA", "zip_code": "94107"}}
+    var getAccountsResponse = {"count": 1, "next": null, "previous": null, "results": [{"id": "dbee5490-6595-42ec-a792-82a9fc516633", "url": "https://api.emburse.com/v1/accounts/dbee5490-6595-42ec-a792-82a9fc516633", "name": "Account for Emburse (Stripe)", "number": "104840085519", "ledger_balance": 49590.77, "available_balance": 49590.77, "minimum_balance": 50000.0, "created_at": "2018-03-22T01:39:42.743849Z"}]}
+
+    var EmburseApi = function() {
+      var pathRoot = 'https://limitless-tundra-78661.herokuapp.com/api';
+      var makePath = function(pathSuffix) {
+        return pathRoot + pathSuffix;
+      };
+
+      this.paths = {
+        getTransaction: makePath('/v1/transactions'),
+        getCompany: makePath('/v1/company'),
+        getAccounts: makePath('/v1/accounts'),
+      };
+    };
+
+    EmburseApi.prototype.fullApiPath = function(pathSuffix) {
+      return this.apiBasePath + pathSuffix;
+    };
+
+    EmburseApi.prototype.getCompany = function() {
+      const path = this.paths.getCompany;
+      return Promise.resolve(getCompanyResponse);
+      /*
+      return axios.get(path, { params: params })
+        .then(function(response) {
+          console.log(response);
+          return response;
+        })
+      */
+    };
+
+    EmburseApi.prototype.getAccounts = function() {
+      const path = this.paths.getAccounts;
+      return Promise.resolve(getAccountsResponse);
+      /*
+      return axios.get(path, { params: params })
+        .then(function(response) {
+          console.log(response);
+          return response;
+        })
+      */
+    };
+
+    EmburseApi.prototype.getTransactions = function(params) {
+      const path = this.paths.getTransaction;
+      return Promise.resolve(getTxnResponse);
+      return axios.get(path, { params: params })
+        .then(function(response) {
+          console.log(response);
+          return response;
+        });
+    };
+
+    Vue.prototype.$emburse = new EmburseApi();
+    Vue.prototype.$_ = _;
+
+    var CreatedAfterFilter = function(iso_8601) {
+      this.time = iso_8601;
+    };
+    CreatedAfterFilter.prototype.toParams = function() {
+      return { created_after: this.time };
+    };
+
+    var LimitFilter = function(numRecords) {
+      this.limit = numRecords;
+    };
+    LimitFilter.prototype.toParams = function() {
+      return { limit: this.limit };
+    };
+
+    var filters = {
+      dateRange: {
+        allTime: new CreatedAfterFilter('2000-01-01T01:01:01'),
+        thisMonth: new CreatedAfterFilter('2018-07-01T01:01:01'),
+        today: new CreatedAfterFilter('2018-07-13T00:00:00'),
+      },
+    };
+
+    Vue.component('transaction-filters', {
+      data: function() {
+        return {
+          defaultFilters: [
+            new LimitFilter(300)
+          ],
+          userFilters: [],
+          dateRanges: [
+            {
+              label: 'All Time',
+              value: 'allTime',
+            },
+            {
+              label: 'This Month',
+              value: 'thisMonth',
+            },
+            {
+              label: 'Today',
+              value: 'today',
+            },
+          ],
+          range: 'allTime'
+        };
+      },
+      created: function() {
+        this.dateRangeChange();
+      },
+      methods: {
+        dateRangeChange: function() {
+          this.userFilters = [ filters.dateRange[this.range] ];
+        }
+      },
+      watch: {
+        userFilters: function() {
+          this.$emit('filterchange', this.defaultFilters.concat(this.userFilters))
+        }
+      },
+      template: `
+        <div>
+          <h5>Dates</h5>
+          <select v-model="range" v-on:change="dateRangeChange">
+            <option v-for="r in dateRanges" :value="r.value">{{r.label}}</option>
+          </select>
+        </div>
+      `,
+    });
+
+    Vue.component('nav-link', {
+      props: {
+        link: {
+          default: function() { return {}; },
+        },
+      },
+      data: function() {
+        return {};
+      },
+      computed: {
+        iconIdentifier: function() {
+          return this.link.iconIdentifier;
+        },
+        name: function() {
+          return this.link.name;
+        },
+        isSelected: function() {
+          return this.link.isSelected;
+        },
+      },
+      template: `
+        <li class="nav-link" v-bind:class="{selected: isSelected}">
+          <i class="material-icons">{{iconIdentifier}}</i> <span>{{name}}</span>
+        </li>
+      `,
+    });
+
+    Vue.component('side-navigation-group', {
+      props: {
+        group: {
+          default: function() { return []; },
+        },
+      },
+      data: function() {
+        return {};
+      },
+      template: `
+        <ul class="nav-group">
+          <nav-link v-for="l in group" v-bind:link="l"></nav-link>
+        </ul>
+      `,
+    });
+
+    Vue.component('side-navigation', {
+      props: {
+        groups: {
+          default: function() { return []; },
+        },
+      },
+      data: function() {
+        return {};
+      },
+      template: `
+        <nav id="side-nav">
+          <side-navigation-group v-for="g in groups" v-bind:group="g"></side-navigation-group>
+        </nav>
+      `,
+    });
+
+    Vue.component('top-bar', {
+      props: {
+        company: {
+          default: function() { return {} },
+        },
+        accounts: {
+          default: function() { return [] },
+        }
+      },
+      computed: {
+        totalBalance: function() {
+          return this.$_.sumBy(this.accounts, 'available_balance');
+        }
+      },
+      data: function() {
+        return {};
+      },
+      template: `
+        <div class="top-bar">
+          <div class="top-bar-left">
+            <div class="logo">e</div> <span>Emburse - TestApp&trade;</span>
+          </div>
+          <div class="top-bar-right">
+            <span>Balance: <strong>{{totalBalance}}</strong></span>
+            <span>[User Full Name]</span> @ <span v-if="company.name">{{company.name}}</span>
+          </div>
+        </div>
+      `,
+    });
+
+    Vue.component('transaction-list', {
+      props: ['transactions'],
+      template: `
+        <div id="txn-list-wrap">
+          <div>
+            <h3>Transactions</h3>
+            <ul id="txn-list">
+              <transaction v-for="txn in transactions" v-bind:transaction="txn" v-bind:key="txn.id"></transaction>
+            </ul>
+          </div>
+        </div>
+      `,
+    });
+
+    Vue.component('transaction', {
+      props: ['transaction'],
+      computed: {
+        merchantName: function() {
+          return this.transaction.merchant.name;
+        },
+        memberFirstName: function() {
+          return this.transaction.member.first_name;
+        },
+        txnDate: function() {
+          return moment(this.transaction.created_at).format('MMMM Do YYYY');
+        },
+        txnAmount: function() {
+          return Math.abs(this.transaction.amount + 0.0).toFixed(2);
+        },
+        cardDescription: function() {
+          return this.transaction.card.description;
+        },
+      },
+      template: `
+        <li class="txn">
+          <div class="txn-child txn-receipt">
+            <i class="material-icons">receipt</i>
+          </div>
+          <div class="txn-child txn-main-details">
+            <div>
+              <strong>{{merchantName}}</strong>
+            </div>
+            <div class="txn-sub-details">
+              <span>{{txnDate}}</span> <i class="material-icons txn-person-icon">person</i> <span>{{memberFirstName}}</span>
+            </div>
+          </div>
+          <div class="txn-child txn-amount-card" >
+            <div>$\{{txnAmount}}</div>
+            <div><a href="#"><i class="material-icons">credit_card</i> {{cardDescription}}</a></div>
+          </div>
+          <div class="txn-child txn-action-wrap" >
+            <button class="button tiny hollow"><i class="material-icons">arrow_drop_down</i></button>
+          </div>
+        </li>
+      `,
+    });
+
+    var app = new Vue({
+      el: '#app',
+      data: function() {
+        return {
+          authenticated: false,
+          watch: {
+            authenticated: function(authenticated, oldAuthenticated) {
+              if (!authenticated) {
+                // send user back to auth prompt page
+              }
+            }
+          },
+          transactionsCursor: {},
+          accountsCursor: {},
+          company: {},
+          nav_link_groups: [
+            [
+              {
+                name: 'Dashboard',
+                isSelected: false,
+                iconIdentifier: 'dashboard',
+              }
+            ],
+            [
+              {
+                name: 'Cards',
+                isSelected: false,
+                iconIdentifier: 'credit_card',
+              },
+              {
+                name: 'People',
+                isSelected: false,
+                iconIdentifier: 'people',
+              },
+              {
+                name: 'Transactions',
+                isSelected: true,
+                iconIdentifier: 'receipt',
+              },
+              {
+                name: 'Personal Expenses',
+                isSelected: false,
+                iconIdentifier: 'attach_money',
+              },
+              {
+                name: 'Purchase Requests',
+                isSelected: false,
+                iconIdentifier: 'card_giftcard',
+              },
+            ],
+            [
+              {
+                name: 'Budgets',
+                isSelected: false,
+                iconIdentifier: 'pie_chart',
+              },
+              {
+                name: 'Expense Policy',
+                isSelected: false,
+                iconIdentifier: 'gavel',
+              },
+              {
+                name: 'Vendors',
+                isSelected: false,
+                iconIdentifier: 'store',
+              },
+            ],
+            [
+              {
+                name: 'Accounting',
+                isSelected: false,
+                iconIdentifier: 'arrow_downward',
+              },
+              {
+                name: 'Bank Accounts',
+                isSelected: false,
+                iconIdentifier: 'account_balance',
+              },
+            ],
+            [
+              {
+                name: 'User Settings',
+                isSelected: false,
+                iconIdentifier: 'face',
+              },
+              {
+                name: 'Company Settings',
+                isSelected: false,
+                iconIdentifier: 'settings',
+              },
+              {
+                name: 'Support',
+                isSelected: false,
+                iconIdentifier: 'question_answer',
+              },
+            ],
+          ]
+        }
+      },
+      computed: {
+        transactions: function() {
+          var txns = this.transactionsCursor.results;
+          return (txns) ? txns : [];
+        },
+        accounts: function() {
+          var accts = this.accountsCursor.results;
+          return (accts) ? accts : [];
+        },
+      },
+      created: function() {
+        this.$emburse.getCompany()
+          .then((result) => {
+            this.company = result;
+          })
+        this.$emburse.getAccounts()
+          .then((result) => {
+            this.accountsCursor = result;
+          })
+      },
+      methods: {
+        filterchange: function(filterList) {
+          var params = {};
+
+          filterList.map(function(f) {
+            _.extend(params, f.toParams())  ;
+          });
+
+          this.$emburse.getTransactions(params)
+            .then((result) => {
+              this.transactionsCursor = result;
+            })
+        },
+        signIn: function() {
+          this.authenticated = true
+        },
+        signOut: function() {
+          // send req to sign user out
+          this.authenticated = false
+        }
+      }
+    })
+  </script>
+</html>
+
