@@ -12,6 +12,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
 
     <style>
       body {
@@ -29,6 +31,10 @@
       #filter {
         border-left: 1px solid #ccc;
         padding: 20px
+      }
+
+      #chart-container {
+        position: relative;
       }
 
       .top-bar {
@@ -145,15 +151,16 @@
         font-size: .9rem;
       }
 
-      #txn-list-wrap {
-        padding: 15px;
-      }
-
-      #txn-list-wrap h3 {
+      #txn-page-wrap h3 {
         color: #565656;
       }
 
-      #txn-list {
+      #txn-list-wrap {
+        padding-top: 15px;
+      }
+
+      #txn-page-wrap {
+        padding: 15px;
         max-width: 800px;
         margin: auto;
       }
@@ -167,7 +174,7 @@
       <div class="grid-x">
         <side-navigation v-bind:groups="nav_link_groups" class="cell small-2"></side-navigation>
         <section id="main" class="cell auto">
-          <transaction-list v-bind:transactions="transactions"></transaction-list>
+          <transaction-page v-bind:transactions="transactions"></transaction-page>
         </section>
         <section id="filter" class="cell small-3">
           <transaction-filters @filterchange="filterchange"></transaction-filters>
@@ -235,7 +242,6 @@
       } else {
         return axios.get(path, {params: params})
           .then(function (response) {
-            console.log(response);
             return response.data;
           });
       }
@@ -402,16 +408,115 @@
       `,
     });
 
+    Vue.component('graph-display', {
+      props: ['transactions'],
+      template: `
+        <div id="graph-display">
+          <div id="chart-container">
+            <canvas id="chart" width="600" height="250"></canvas>
+          </div>
+        </div>
+      `,
+      data: function() {
+        return {
+          chartData: {
+            datasets: [{ data: [1] }],
+              labels: [ '' ]
+          },
+          chartRef: null,
+        };
+      },
+      watch: {
+        chartData: function() {
+          this.updateChart();
+        },
+        transactions: function() {
+          var cards = {};
+
+          this.transactions.forEach(function(txn) {
+            var card = txn.card;
+
+            if (card) {
+              if (!cards[card.id]) {
+                cards[card.id] = {
+                  amount: 0.0,
+                  description: card.description,
+                };
+              } else {
+                cards[card.id].amount += Math.abs(txn.amount);
+              }
+            }
+          });
+
+          var chart_data = [];
+          var chart_labels = [];
+          Object.values(cards).forEach(function(card_data) {
+            chart_data.push(card_data.amount)  ;
+            chart_labels.push(card_data.description);
+          });
+
+          var gradient = this.getChartCtx().createLinearGradient(0, 0, 0, 400);
+          gradient.addColorStop(0, 'rgba(68,2,142,1)');
+          gradient.addColorStop(1, 'rgba(137,124,142,0)');
+
+          this.chartData = {
+            datasets: [ { data: chart_data, backgroundColor: gradient }],
+            labels: chart_labels,
+          };
+        }
+      },
+      methods: {
+        getChartCtx: function() {
+          return document.getElementById("chart").getContext('2d');
+        },
+        updateChart: function() {
+          var ctx = this.getChartCtx();
+          var data = this.chartData;
+          var options = {
+            legend: {
+              position: 'right'
+            },
+            animation: {
+              duration: 400,
+            },
+          };
+
+          if (this.chartRef) {
+            this.chartRef.destroy();
+          }
+
+          this.chartRef = new Chart(ctx,{
+            type: 'pie',
+            data: data,
+            options: options
+          });
+
+        },
+      },
+
+      mounted: function() {
+        this.updateChart();
+      },
+    });
+
+    Vue.component('transaction-page', {
+      props: ['transactions'],
+      template: `
+        <div id="txn-page-wrap">
+          <h3>Transactions</h3>
+          <graph-display v-bind:transactions="transactions"></graph-display>
+          <transaction-list v-bind:transactions="transactions"></transaction-list>
+        </div>
+      `,
+    });
+
     Vue.component('transaction-list', {
       props: ['transactions'],
       template: `
         <div id="txn-list-wrap">
-          <div>
-            <h3>Transactions</h3>
-            <ul id="txn-list">
-              <component v-for="txn in transactions" v-bind:transaction="txn" v-bind:key="txn.id" :is="getTransactionType(txn)"></component>
-            </ul>
-          </div>
+          <ul id="txn-list">
+            <component v-for="txn in transactions" v-bind:transaction="txn" v-bind:key="txn.id" :is="getTransactionType(txn)"></component>
+          </ul>
         </div>
       `,
       methods: {
@@ -470,7 +575,6 @@
           return this.transaction.merchant.name;
         },
         memberFirstName: function() {
-          console.log(this.transaction)
           return (this.transaction.member || {first_name: 'No Member'}).first_name;
         },
         txnDate: function() {
